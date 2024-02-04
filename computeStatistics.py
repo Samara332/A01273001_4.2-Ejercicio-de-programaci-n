@@ -21,7 +21,7 @@ def calcular_moda(numbers):
     mode = max(counts, key=counts.get)
     return mode
 
-def calculate_variance(numbers, mean):
+def calcular_varianza(numbers, mean):
     squared_diff = sum((x - mean) ** 2 for x in numbers)
     return squared_diff / len(numbers)
 
@@ -31,17 +31,28 @@ def calcular_desviacion_estandar(variance):
 def compute_statistics(file_path):
     try:
         with open(file_path, 'r') as file:
-            data = [float(line.strip()) for line in file]
-    except (ValueError, FileNotFoundError) as e:
+            data = []
+            for line in file:
+                try:
+                    num = float(line.strip())
+                    data.append(num)
+                except ValueError:
+                    print(f"Error: Could not convert string to float '{line.strip()}'")
+
+    except FileNotFoundError as e:
         print(f"Error: {e}")
         return
 
     start_time = time.time()
 
+    if not data:
+        print("Error: No valid numeric data found in the file.")
+        return
+
     mean = calcular_media(data)
     median = calcular_mediana(data)
     mode = calcular_moda(data)
-    variance = calculate_variance(data, mean)
+    variance = calcular_varianza(data, mean)
     standard_deviation = calcular_desviacion_estandar(variance)
 
     elapsed_time = time.time() - start_time
@@ -50,19 +61,19 @@ def compute_statistics(file_path):
     print(f"Mediana: {median}")
     print(f"Moda: {mode}")
     print(f"Varianza: {variance}")
-    print(f"Desviacion estandat: {standard_deviation}")
-    print(f"Tiempo de compilacion:  {elapsed_time:.6f} segundos")
+    print(f"Desviacion estandar: {standard_deviation}")
+    print(f"Tiempo de compilacion: {elapsed_time:.6f} segundos")
 
     with open("StatisticsResults.txt", 'w') as result_file:
         result_file.write(f"Media: {mean}\n")
-        result_file.write(f"Moda: {median}\n")
-        result_file.write(f"Mediana: {mode}\n")
+        result_file.write(f"Mediana: {median}\n")
+        result_file.write(f"Moda: {mode}\n")
         result_file.write(f"Varianza: {variance}\n")
         result_file.write(f"Desviacion estandar: {standard_deviation}\n")
-        result_file.write(f"Tiempo de compilacion:  {elapsed_time:.6f} segundos\n")
+        result_file.write(f"Tiempo de compilacion: {elapsed_time:.6f} segundos\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python computeStatistics.py TC1.txt")
+        print("Usage: python computeStatistics.py fileWithData.txt")
     else:
         compute_statistics(sys.argv[1])
