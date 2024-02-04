@@ -51,7 +51,7 @@ def compute_statistics(file_path):
     print(f"Moda: {mode}")
     print(f"Varianza: {variance}")
     print(f"Desviacion estandat: {standard_deviation}")
-    print(f"Tiempo de compilacion: {elapsed_time} segundos")
+    print(f"Tiempo de compilacion:  {elapsed_time:.6f} segundos")
 
     with open("StatisticsResults.txt", 'w') as result_file:
         result_file.write(f"Media: {mean}\n")
@@ -59,7 +59,7 @@ def compute_statistics(file_path):
         result_file.write(f"Mediana: {mode}\n")
         result_file.write(f"Varianza: {variance}\n")
         result_file.write(f"Desviacion estandar: {standard_deviation}\n")
-        result_file.write(f"Tiempo de compilacion: {elapsed_time} segundos\n")
+        result_file.write(f"Tiempo de compilacion:  {elapsed_time:.6f} segundos\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
