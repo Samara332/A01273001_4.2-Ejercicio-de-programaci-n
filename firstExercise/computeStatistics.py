@@ -1,11 +1,29 @@
 import sys
 import time
 
-def calcular_media(numbers):
-    return sum(numbers) / len(numbers)
+def calcular_media(numeros):
+    """
+    Calcular la media de una lista de números.
 
-def calcular_mediana(numbers):
-    sorted_numbers = sorted(numbers)
+    Args:
+        numeros (list): Lista de números.
+
+    Returns:
+        float: Valor de la media.
+    """
+    return sum(numeros) / len(numeros)
+
+def calcular_mediana(numeros):
+    """
+    Calcular la mediana de una lista de números.
+
+    Args:
+        numeros (list): Lista de números.
+
+    Returns:
+        float: Valor de la mediana.
+    """
+    sorted_numbers = sorted(numeros)
     n = len(sorted_numbers)
     if n % 2 == 0:
         middle1 = sorted_numbers[n // 2 - 1]
@@ -14,66 +32,89 @@ def calcular_mediana(numbers):
     else:
         return sorted_numbers[n // 2]
 
-def calcular_moda(numbers):
+def calcular_moda(numeros):
+    """
+    Calcular la moda de una lista de números.
+
+    Args:
+        numeros (list): Lista de números.
+
+    Returns:
+        float: Valor de la moda.
+    """
     counts = {}
-    for num in numbers:
+    for num in numeros:
         counts[num] = counts.get(num, 0) + 1
-    mode = max(counts, key=counts.get)
-    return mode
+    moda = max(counts, key=counts.get)
+    return moda
 
-def calcular_varianza(numbers, mean):
-    squared_diff = sum((x - mean) ** 2 for x in numbers)
-    return squared_diff / len(numbers)
+def calcular_varianza(numeros, media):
+    """
+    Calcular la varianza de una lista de números.
 
-def calcular_desviacion_estandar(variance):
-    return variance ** 0.5
+    Args:
+        numeros (list): Lista de números.
+        media (float): Valor de la media.
 
-def compute_statistics(file_path):
+    Returns:
+        float: Valor de la varianza.
+    """
+    squared_diff = sum((x - media) ** 2 for x in numeros)
+    return squared_diff / len(numeros)
+
+def calcular_desviacion_estandar(varianza):
+    """
+    Calcular la desviación estándar a partir de la varianza.
+
+    Args:
+        varianza (float): Valor de la varianza.
+
+    Returns:
+        float: Valor de la desviación estándar.
+    """
+    return varianza ** 0.5
+
+def calcular_estadisticas_descriptivas(ruta_archivo):
+    """
+    Calcular estadísticas descriptivas a partir de un archivo de números.
+
+    Args:
+        ruta_archivo (str): Ruta al archivo con datos numéricos.
+    """
     try:
-        with open(file_path, 'r') as file:
-            data = []
-            for line in file:
-                try:
-                    num = float(line.strip())
-                    data.append(num)
-                except ValueError:
-                    print(f"Error: Could not convert string to float '{line.strip()}'")
-
-    except FileNotFoundError as e:
+        with open(ruta_archivo, 'r') as archivo:
+            datos = [float(linea.strip()) for linea in archivo]
+    except (ValueError, FileNotFoundError) as e:
         print(f"Error: {e}")
         return
 
-    start_time = time.time()
+    tiempo_inicio = time.time()
 
-    if not data:
-        print("Error: No valid numeric data found in the file.")
-        return
+    media = calcular_media(datos)
+    mediana = calcular_mediana(datos)
+    moda = calcular_moda(datos)
+    varianza = calcular_varianza(datos, media)
+    desviacion_estandar = calcular_desviacion_estandar(varianza)
 
-    mean = calcular_media(data)
-    median = calcular_mediana(data)
-    mode = calcular_moda(data)
-    variance = calcular_varianza(data, mean)
-    standard_deviation = calcular_desviacion_estandar(variance)
+    tiempo_transcurrido = time.time() - tiempo_inicio
 
-    elapsed_time = time.time() - start_time
+    print(f"Media: {media}")
+    print(f"Mediana: {mediana}")
+    print(f"Moda: {moda}")
+    print(f"Varianza: {varianza}")
+    print(f"Desviación Estándar: {desviacion_estandar}")
+    print(f"Tiempo Transcurrido: {tiempo_transcurrido:.6f} segundos")
 
-    print(f"Media: {mean}")
-    print(f"Mediana: {median}")
-    print(f"Moda: {mode}")
-    print(f"Varianza: {variance}")
-    print(f"Desviacion estandar: {standard_deviation}")
-    print(f"Tiempo de compilacion: {elapsed_time:.6f} segundos")
-
-    with open("StatisticsResults.txt", 'w') as result_file:
-        result_file.write(f"Media: {mean}\n")
-        result_file.write(f"Mediana: {median}\n")
-        result_file.write(f"Moda: {mode}\n")
-        result_file.write(f"Varianza: {variance}\n")
-        result_file.write(f"Desviacion estandar: {standard_deviation}\n")
-        result_file.write(f"Tiempo de compilacion: {elapsed_time:.6f} segundos\n")
+    with open("ResultadosEstadisticos.txt", 'w') as archivo_resultados:
+        archivo_resultados.write(f"Media: {media}\n")
+        archivo_resultados.write(f"Mediana: {mediana}\n")
+        archivo_resultados.write(f"Moda: {moda}\n")
+        archivo_resultados.write(f"Varianza: {varianza}\n")
+        archivo_resultados.write(f"Desviación Estándar: {desviacion_estandar}\n")
+        archivo_resultados.write(f"Tiempo Transcurrido: {tiempo_transcurrido:.6f} segundos\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python computeStatistics.py fileWithData.txt")
+        print("Uso: python calcularEstadisticas.py archivoConDatos.txt")
     else:
-        compute_statistics(sys.argv[1])
+        calcular_estadisticas_descriptivas(sys.argv[1])
