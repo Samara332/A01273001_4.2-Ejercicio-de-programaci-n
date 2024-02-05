@@ -1,59 +1,90 @@
 import sys
 import time
 
-def convert_to_binary_and_hex(data):
-    binary_results = []
-    hex_results = []
-    
-    for item in data:
+def convertir_a_binario_hexadecimal(datos):
+    """
+    Convertir los números a binario y hexadecimal.
+
+    Args:
+        datos (list): Lista de números.
+
+    Returns:
+        tuple: Tupla que contiene listas con los resultados binarios y hexadecimales.
+    """
+    resultados_binarios = []
+    resultados_hexadecimales = []
+
+    for item in datos:
         try:
             num = int(item)
-            binary_results.append(bin(num)[2:])  # Removing '0b' prefix
-            hex_results.append(hex(num)[2:])  # Removing '0x' prefix
+            resultados_binarios.append(bin(num)[2:])  # Eliminar el prefijo '0b'
+            resultados_hexadecimales.append(hex(num)[2:])  # Eliminar el prefijo '0x'
         except ValueError:
-            print(f"Error: Could not convert '{item}' to a number")
+            print(f"Error: No se pudo convertir '{item}' a un número")
 
-    return binary_results, hex_results
+    return resultados_binarios, resultados_hexadecimales
 
-def process_file(file_path):
+def procesar_archivo(ruta_archivo):
+    """
+    Leer datos desde un archivo.
+
+    Args:
+        ruta_archivo (str): Ruta al archivo de entrada.
+
+    Returns:
+        list: Lista de datos leídos desde el archivo.
+    """
     try:
-        with open(file_path, 'r') as file:
-            data = [line.strip() for line in file]
+        with open(ruta_archivo, 'r') as archivo:
+            datos = [linea.strip() for linea in archivo]
     except FileNotFoundError as e:
         print(f"Error: {e}")
         return None
 
-    return data
+    return datos
 
-def write_results_to_file(binary_results, hex_results):
-    with open("ConversionResults.txt", 'w') as result_file:
-        result_file.write("Binary Results:\n")
-        result_file.write("\n".join(binary_results) + "\n\n")
-        result_file.write("Hexadecimal Results:\n")
-        result_file.write("\n".join(hex_results) + "\n")
+def escribir_resultados_a_archivo(resultados_binarios, resultados_hexadecimales):
+    """
+    Escribir resultados a un archivo.
 
-def convert_numbers(file_path):
-    start_time = time.time()
+    Args:
+        resultados_binarios (list): Lista de resultados binarios.
+        resultados_hexadecimales (list): Lista de resultados hexadecimales.
+    """
+    with open("ResultadosConversion.txt", 'w') as archivo_resultados:
+        archivo_resultados.write("Resultados Binarios:\n")
+        archivo_resultados.write("\n".join(resultados_binarios) + "\n\n")
+        archivo_resultados.write("Resultados Hexadecimales:\n")
+        archivo_resultados.write("\n".join(resultados_hexadecimales) + "\n")
 
-    data = process_file(file_path)
+def convertir_numeros(ruta_archivo):
+    """
+    Realizar la conversión de números y mostrar resultados.
 
-    if data is None:
+    Args:
+        ruta_archivo (str): Ruta al archivo de entrada.
+    """
+    tiempo_inicio = time.time()
+
+    datos = procesar_archivo(ruta_archivo)
+
+    if datos is None:
         return
 
-    binary_results, hex_results = convert_to_binary_and_hex(data)
+    resultados_binarios, resultados_hexadecimales = convertir_a_binario_hexadecimal(datos)
 
-    elapsed_time = time.time() - start_time
+    tiempo_transcurrido = time.time() - tiempo_inicio
 
-    print("Binary Results:")
-    print("\n".join(binary_results))
-    print("\nHexadecimal Results:")
-    print("\n".join(hex_results))
-    print(f"Time Elapsed: {elapsed_time:.6f} seconds")
+    print("Resultados Binarios:")
+    print("\n".join(resultados_binarios))
+    print("\nResultados Hexadecimales:")
+    print("\n".join(resultados_hexadecimales))
+    print(f"Tiempo Transcurrido: {tiempo_transcurrido:.6f} segundos")
 
-    write_results_to_file(binary_results, hex_results)
+    escribir_resultados_a_archivo(resultados_binarios, resultados_hexadecimales)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python convertNumbers.py fileWithData.txt")
+        print("Uso: python convertirNumeros.py archivoConDatos.txt")
     else:
-        convert_numbers(sys.argv[1])
+        convertir_numeros(sys.argv[1])
