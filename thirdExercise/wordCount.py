@@ -1,47 +1,69 @@
 import sys
 import time
 
-def count_word_frequency(file_path):
+def contar_frecuencia_palabras(ruta_archivo):
+    """
+    Contar la frecuencia de cada palabra distinta en el archivo.
+
+    Args:
+        ruta_archivo (str): Ruta al archivo de entrada.
+
+    Returns:
+        dict: Diccionario que contiene las frecuencias de las palabras.
+    """
     try:
-        with open(file_path, 'r') as file:
-            words = file.read().split()
+        with open(ruta_archivo, 'r', encoding='utf-8') as archivo:
+            palabras = archivo.read().split()
     except FileNotFoundError as e:
         print(f"Error: {e}")
         return None
 
-    word_frequency = {}
-    for word in words:
-        word = word.lower()
-        word_frequency[word] = word_frequency.get(word, 0) + 1
+    frecuencia_palabras = {}
+    for palabra in palabras:
+        # Convertir la palabra a minúsculas para contar de manera insensible a mayúsculas
+        palabra = palabra.lower()
+        frecuencia_palabras[palabra] = frecuencia_palabras.get(palabra, 0) + 1
 
-    return word_frequency
+    return frecuencia_palabras
 
-def write_results_to_file(word_frequency):
-    with open("WordCountResults.txt", 'w') as result_file:
-        result_file.write("Word\tFrequency\n")
-        for word, frequency in word_frequency.items():
-            result_file.write(f"{word}\t{frequency}\n")
+def escribir_resultados_a_archivo(frecuencia_palabras):
+    """
+    Escribir frecuencias de palabras a un archivo.
 
-def word_count(file_path):
-    start_time = time.time()
+    Args:
+        frecuencia_palabras (dict): Diccionario que contiene las frecuencias de las palabras.
+    """
+    with open("ResultadosConteoPalabras.txt", 'w', encoding='utf-8') as archivo_resultados:
+        archivo_resultados.write("Palabra\tFrecuencia\n")
+        for palabra, frecuencia in frecuencia_palabras.items():
+            archivo_resultados.write(f"{palabra}\t{frecuencia}\n")
 
-    word_frequency = count_word_frequency(file_path)
+def conteo_palabras(ruta_archivo):
+    """
+    Realizar el conteo de palabras y mostrar los resultados.
 
-    if word_frequency is None:
+    Args:
+        ruta_archivo (str): Ruta al archivo de entrada.
+    """
+    tiempo_inicio = time.time()
+
+    frecuencia_palabras = contar_frecuencia_palabras(ruta_archivo)
+
+    if frecuencia_palabras is None:
         return
 
-    elapsed_time = time.time() - start_time
+    tiempo_transcurrido = time.time() - tiempo_inicio
 
-    print("Word\tFrequency")
-    for word, frequency in word_frequency.items():
-        print(f"{word}\t{frequency}")
+    print("Palabra\tFrecuencia")
+    for palabra, frecuencia in frecuencia_palabras.items():
+        print(f"{palabra}\t{frecuencia}")
 
-    print(f"Time Elapsed: {elapsed_time:.6f} seconds")
+    print(f"Tiempo transcurrido: {tiempo_transcurrido:.6f} segundos")
 
-    write_results_to_file(word_frequency)
+    escribir_resultados_a_archivo(frecuencia_palabras)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python wordCount.py fileWithData.txt")
+        print("Uso: python conteo_palabras.py archivoConDatos.txt")
     else:
-        word_count(sys.argv[1])
+        conteo_palabras(sys.argv[1])
